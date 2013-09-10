@@ -48,6 +48,25 @@ get '/take_main/:main_id' do
   erb :take_main
 end
 
+get '/tweet' do
+  erb :create_tweet
+end
+
+get '/tweets/:username' do
+  @user = TwitterUser.find_by_username(params[:username])
+  if @user.tweets_stale?
+    @user.clear_tweets!
+    @user.fetch_tweets!
+  end  
+  @tweets = @user.tweets
+  erb :tweets
+end
+
+post '/tweet' do
+  tweet_text = params[:tweet_text]
+  Twitter.update(tweet_text)
+end
+
 
 
 
